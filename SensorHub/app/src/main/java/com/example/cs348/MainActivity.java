@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener(){
 
         public void onClick(View v){
-        // Create an Intent to start the new activity
+
         Intent intent = new Intent(MainActivity.this, GetPythonInfo.class);
         startActivity(intent);
     }

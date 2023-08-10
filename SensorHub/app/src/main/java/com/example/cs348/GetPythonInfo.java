@@ -27,32 +27,35 @@ public class GetPythonInfo extends AppCompatActivity {
 
 
     public interface JsonApiService {
-        @GET("/json_data")
+        @GET("/sensors/")
         Call<List<PlantData>> getJsonData();
     }
 
-    // Your custom data class
+    // Custom data class
     public class PlantData {
-        private int id;
-        private double measurement;
-        private String location;
+        private int sensor_id;
+        private String sensor_name;
+        private String manufacturer_id;
+        private boolean isOnline;
 
         // Constructor, getters, setters, etc.
         public int getId(){
-            return id;
+            return sensor_id;
         }
-        public double getMeasurement() {
-            return measurement;
+        public String getSensorName() {
+            return sensor_name;
         }
-        public String getLocation(){
-            return location;
+        public String getManufacturerId(){
+            return manufacturer_id;
         }
+        public boolean isOnline(){
+            return isOnline;}
     }
 
     // Method to fetch JSON data using Retrofit
     private void fetchJsonData() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:5050") // Replace with your actual Python server IP
+                .baseUrl("http://10.0.2.2:5000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -63,11 +66,10 @@ public class GetPythonInfo extends AppCompatActivity {
             public void onResponse(Call<List<PlantData>> call, Response<List<PlantData>> response) {
                 if (response.isSuccessful()) {
                     List<PlantData> plantDataList = response.body();
-                    // Now you have the JSON data in plantDataList, do what you need with it.
-                    // For example, you can update your UI with the fetched data.
+
                     updateUI(plantDataList);
                 } else {
-                    // Handle error case
+
                     Log.e("GetPythonInfo", "Error: " + response.message());
                 }
             }
@@ -80,14 +82,15 @@ public class GetPythonInfo extends AppCompatActivity {
         });
     }
 
-    // Method to update the UI with the fetched data
+
     private void updateUI(List<PlantData> plantDataList) {
         if (plantDataList != null && !plantDataList.isEmpty()) {
             for(int i =0; i < plantDataList.size(); i++) {
                 TextView textView = findViewById(R.id.jsonTextView);
                 textView.append("\nId: " + plantDataList.get(i).getId());
-                textView.append("\nMeasurement: " + plantDataList.get(i).getMeasurement());
-                textView.append("\nLocation: " + plantDataList.get(i).getLocation());
+                textView.append("\nSensor Name: " + plantDataList.get(i).getSensorName());
+                textView.append("\nManufacturer Id: " + plantDataList.get(i).getManufacturerId());
+                textView.append("\nIs Online?: " + plantDataList.get(i).isOnline());
             }
         } else {
 
